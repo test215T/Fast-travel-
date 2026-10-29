@@ -1,49 +1,23 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net472</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <AssemblyName>JsonOverride</AssemblyName>
+    <RootNamespace>JsonOverride</RootNamespace>
     <Description>Generic JSON Mod Loader for Hero's Adventure Mobile IL2CPP</Description>
     <Version>3.0.0</Version>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
-    <NoWarn>CS0618;CS0169;CS0414</NoWarn>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <RestoreAdditionalProjectSources>
+      https://api.nuget.org/v3/index.json;
+      https://nuget.bepinex.dev/v3/index.json
+    </RestoreAdditionalProjectSources>
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- อ้างอิงระบบแกนหลักและตัวจัดหมวดหมู่ประเภทข้อมูลในเครื่องของคุณ -->
-    <Reference Include="BepInEx.Core">
-      <HintPath>..\BepInEx\core\BepInEx.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="BepInEx.Unity.IL2CPP">
-      <HintPath>..\BepInEx\core\BepInEx.Unity.IL2CPP.dll</HintPath>
-    </Reference>
-    
-    <!-- เรียกใช้งานคู่หูไลบรารีระบบ Interop ทั้งสองตัวร่วมกันเพื่อความสมบูรณ์แบบ -->
-    <Reference Include="Il2CppInterop.Common">
-      <HintPath>..\BepInEx\core\Il2CppInterop.Common.dll</HintPath>
-    </Reference>
-    <Reference Include="Il2CppInterop.Runtime">
-      <HintPath>..\BepInEx\core\Il2CppInterop.Runtime.dll</HintPath>
-    </Reference>
-    
-    <Reference Include="0Harmony">
-      <HintPath>..\BepInEx\core\0Harmony.dll</HintPath>
-    </Reference>
-    
-    <!-- อ้างอิงจากโฟลเดอร์ interop และ unity-libs -->
-    <Reference Include="Assembly-CSharp">
-      <HintPath>..\BepInEx\interop\Assembly-CSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="Il2Cppmscorlib">
-      <HintPath>..\BepInEx\interop\Il2Cppmscorlib.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine">
-      <HintPath>..\BepInEx\unity-libs\UnityEngine.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.CoreModule">
-      <HintPath>..\BepInEx\unity-libs\UnityEngine.CoreModule.dll</HintPath>
-    </Reference>
+    <PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.*" IncludeAssets="compile" />
   </ItemGroup>
 
 </Project>
