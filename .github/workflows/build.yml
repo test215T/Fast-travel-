@@ -44,8 +44,8 @@ jobs:
       run: dotnet restore
 
     - name: Build Project (IL2CPP Optimized)
-      # แก้ไขจากเครื่องหมายจุลภาค (,) เป็นเครื่องหมายอัฒภาค (;) เพื่อให้ระบบ MSBuild อ่านค่าได้ถูกต้อง
-      run: dotnet build -c Release --no-restore /p:NoWarn="CS0618;CS0169;CS0414"
+      # ตัดตัวแปร NoWarn ออกไปทั้งหมดเพื่อให้สั่งรันผ่านฉลุย
+      run: dotnet build -c Release --no-restore
 
     - name: Upload Mod Artifact
       uses: actions/upload-artifact@v4
