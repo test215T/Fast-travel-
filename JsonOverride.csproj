@@ -4,24 +4,29 @@
     <TargetFramework>net472</TargetFramework>
     <AssemblyName>JsonOverride</AssemblyName>
     <Description>Generic JSON Mod Loader for Hero's Adventure Mobile IL2CPP</Description>
-    <Version>2.6.0</Version>
+    <Version>2.8.0</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
     <NoWarn>CS0618;CS0169;CS0414</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- อ้างอิงระบบหลักที่มีอยู่จริงตามโครงสร้างโฟลเดอร์ core ของคุณ -->
+    <!-- อ้างอิงระบบแกนหลักและตัวจัดหมวดหมู่ประเภทข้อมูลในเครื่องของคุณ -->
     <Reference Include="BepInEx.Core">
       <HintPath>..\BepInEx\core\BepInEx.Core.dll</HintPath>
     </Reference>
     <Reference Include="BepInEx.Unity.IL2CPP">
       <HintPath>..\BepInEx\core\BepInEx.Unity.IL2CPP.dll</HintPath>
     </Reference>
-    <!-- เพิ่มไฟล์อ้างอิงสำหรับเรียกใช้งานคำสั่ง Interop แปลงค่าตัวแปรใน RAM -->
+    
+    <!-- เรียกใช้งานคู่หูไลบรารีระบบ Interop ทั้งสองตัวร่วมกันเพื่อความสมบูรณ์แบบ -->
+    <Reference Include="Il2CppInterop.Common">
+      <HintPath>..\BepInEx\core\Il2CppInterop.Common.dll</HintPath>
+    </Reference>
     <Reference Include="Il2CppInterop.Runtime">
       <HintPath>..\BepInEx\core\Il2CppInterop.Runtime.dll</HintPath>
     </Reference>
+    
     <Reference Include="0Harmony">
       <HintPath>..\BepInEx\core\0Harmony.dll</HintPath>
     </Reference>
