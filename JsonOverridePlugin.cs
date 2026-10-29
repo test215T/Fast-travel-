@@ -1,5 +1,4 @@
 using BepInEx;
-using BepInEx.IL2CPP; // เปลี่ยนมาใช้คลาสสำหรับ IL2CPP บนมือถือโดยเฉพาะ
 using HarmonyLib;
 using System.IO;
 using System.Reflection;
@@ -7,11 +6,12 @@ using System.Reflection;
 namespace JsonOverride
 {
     [BepInPlugin("com.modshare.runtime.jsonloader", "JsonOverride Pro", "2.5.0")]
-    public class JsonOverridePlugin : BasePlugin // เปลี่ยนจาก BaseUnityPlugin เป็น BasePlugin ของ IL2CPP
+    // เปลี่ยนตำแหน่งปลายทางมาเกาะที่โครงสร้างหลักสากลตามที่คุณมีในรูปภาพแน่นอน
+    public class JsonOverridePlugin : BepInEx.Unity.IL2CPP.BasePlugin
     {
         public static BepInEx.Logging.ManualLogSource ModLogger;
 
-        public override void Load() // สำหรับ IL2CPP จะใช้คำสั่ง Load() แทน Awake()
+        public override void Load()
         {
             ModLogger = Log;
 
