@@ -1,0 +1,23 @@
+name: build
+on:
+  push:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Unpack BepInEx libs next to the project
+        run: |
+          unzip -q BepInEx-Libs.zip -d ..
+          if [ -d ../BepInEx/Interop ]; then mv ../BepInEx/Interop ../BepInEx/interop; fi
+          ls ../BepInEx/core ../BepInEx/interop ../BepInEx/unity-libs
+      - name: Build
+        run: dotnet build JsonOverride.csproj -c Release -o out
+      - uses: actions/upload-artifact@v4
+        with:
+          name: JsonOverride
+          path: out/JsonOverride.dll
