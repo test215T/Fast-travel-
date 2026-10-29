@@ -15,7 +15,6 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v4
 
-    # ขั้นตอนเพิ่มพิเศษ: สั่งแตกไฟล์ .zip ออกมาเป็นโฟลเดอร์ BepInEx ก่อนเริ่มบิวด์
     - name: Extract BepInEx Libraries Zip
       run: |
         if [ -f "BepInEx-Libs.zip" ]; then
@@ -45,7 +44,8 @@ jobs:
       run: dotnet restore
 
     - name: Build Project (IL2CPP Optimized)
-      run: dotnet build -c Release --no-restore /p:NoWarn=CS0618,CS0169,CS0414
+      # แก้ไขจากเครื่องหมายจุลภาค (,) เป็นเครื่องหมายอัฒภาค (;) เพื่อให้ระบบ MSBuild อ่านค่าได้ถูกต้อง
+      run: dotnet build -c Release --no-restore /p:NoWarn="CS0618;CS0169;CS0414"
 
     - name: Upload Mod Artifact
       uses: actions/upload-artifact@v4
