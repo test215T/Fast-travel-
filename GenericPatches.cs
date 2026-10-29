@@ -1,21 +1,23 @@
 using HarmonyLib;
+using UnityEngine;
 
 namespace JsonOverride
 {
-    [HarmonyPatch(typeof(DataTableManager), "GetConfigText")] 
-    public class GenericJsonPatch
+    [HarmonyPatch(typeof(TextAsset), nameof(TextAsset.bytes), MethodType.Getter)]
+    public class GenericJsonBytesPatch
     {
-        static bool Prefix(string configName, ref string __result)
+        static bool Prefix(TextAsset __instance, ref byte[] __result)
         {
-            // ตรวจสอบใน Cache ด่วนบน RAM ถ้าเจอไฟล์เขียนทับ ให้ทำงานทันที
+            if (__instance == null) return true;
+
+            string configName = __instance.name;
             if (JsonCache.TryGetConfig(configName, out string customJson))
             {
-                __result = customJson;
-                JsonOverridePlugin.ModLogger.LogInfo($"[JsonOverride] Injected data from memory for: {configName}");
-                return false; // สั่งข้ามคำสั่งเดิมของเกม
+                __result = System.Text.Encoding.UTF8.GetBytes(customJson);
+                JsonOverridePlugin.ModLogger.LogInfo($"[JsonOverride] Injected text data for asset: {configName}");
+                return false; 
             }
-
-            return true; // ปล่อยให้เกมทำตามกระบวนการปกติถ้าไม่มีมอดไฟล์นั้น
+            return true;
         }
     }
 }

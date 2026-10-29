@@ -8,7 +8,6 @@ namespace JsonOverride
     {
         private static readonly Dictionary<string, string> LoadedConfigs = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
-        // โหลดและตรวจสอบไฟล์ JSON ทั้งหมดในโฟลเดอร์ Data มารอไว้ล่วงหน้า
         public static void PreloadAllJsons(string folderPath)
         {
             if (!Directory.Exists(folderPath)) return;
@@ -21,10 +20,9 @@ namespace JsonOverride
                 {
                     string content = File.ReadAllText(file);
                     
-                    // ระบบตรวจจับความผิดพลาดขั้นพื้นฐาน (ป้องกัน JSON เสียหายจนเกมพัง)
                     if (!content.Trim().StartsWith("{") && !content.Trim().StartsWith("["))
                     {
-                        JsonOverridePlugin.ModLogger.LogWarning($"[JsonOverride] Skip {configName}.json: Invalid JSON structure.");
+                        JsonOverridePlugin.ModLogger.LogWarning($"[JsonOverride] Skip {configName}.json: Invalid Structure.");
                         continue;
                     }
 
@@ -38,7 +36,6 @@ namespace JsonOverride
             }
         }
 
-        // ดึงข้อความ JSON ออกมาใช้งานแบบด่วน
         public static bool TryGetConfig(string configName, out string jsonContent)
         {
             string cleanName = configName.Replace(".json", "");
