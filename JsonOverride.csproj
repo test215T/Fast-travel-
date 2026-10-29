@@ -7,10 +7,12 @@
     <Version>2.5.0</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
+    <!-- ย้ายคำสั่งปิดการตรวจสอบแจ้งเตือนโค้ด (NoWarn) มาใส่ตรงนี้แทนอย่างปลอดภัย -->
+    <NoWarn>CS0618;CS0169;CS0414</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- อ้างอิงไฟล์แกนหลักจากโฟลเดอร์ core ที่อยู่ตามภาพของคุณ -->
+    <!-- อ้างอิงจากโฟลเดอร์ core -->
     <Reference Include="BepInEx.Core">
       <HintPath>..\BepInEx\core\BepInEx.Core.dll</HintPath>
     </Reference>
@@ -21,12 +23,20 @@
       <HintPath>..\BepInEx\core\0Harmony.dll</HintPath>
     </Reference>
     
-    <!-- อ้างอิงไฟล์คลาสข้อมูลของตัวเกม (สำหรับ IL2CPP มักจะอยู่ในโฟลเดอร์ BepInEx/interop หรือ Managed) -->
+    <!-- อ้างอิงจากโฟลเดอร์ interop -->
     <Reference Include="Assembly-CSharp">
-      <HintPath>..\GameData\Managed\Assembly-CSharp.dll</HintPath>
+      <HintPath>..\BepInEx\interop\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="Il2Cppmscorlib">
-      <HintPath>..\GameData\Managed\Il2Cppmscorlib.dll</HintPath>
+      <HintPath>..\BepInEx\interop\Il2Cppmscorlib.dll</HintPath>
+    </Reference>
+
+    <!-- อ้างอิงจากโฟลเดอร์ unity-libs -->
+    <Reference Include="UnityEngine">
+      <HintPath>..\BepInEx\unity-libs\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>..\BepInEx\unity-libs\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
   </ItemGroup>
 
