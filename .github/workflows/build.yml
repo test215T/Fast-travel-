@@ -1,0 +1,57 @@
+name: Build JsonOverride IL2CPP Mod
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    # ขั้นตอนเพิ่มพิเศษ: สั่งแตกไฟล์ .zip ออกมาเป็นโฟลเดอร์ BepInEx ก่อนเริ่มบิวด์
+    - name: Extract BepInEx Libraries Zip
+      run: |
+        if [ -f "BepInEx-Libs.zip" ]; then
+          echo "Extracting BepInEx-Libs.zip..."
+          unzip -o BepInEx-Libs.zip -d BepInEx
+          echo "Current directory structure:"
+          ls -R BepInEx
+        else
+          echo "Error: BepInEx-Libs.zip not found!"
+          exit 1
+        fi
+
+    - name: Setup .NET Core SDK
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Setup NuGet Cache
+      uses: actions/cache@v4
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
+
+    - name: Restore Dependencies
+      run: dotnet restore
+
+    - name: Build Project (IL2CPP Optimized)
+      run: dotnet build -c Release --no-restore /p:NoWarn=CS0618,CS0169,CS0414
+
+    - name: Upload Mod Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: JsonOverride-IL2CPP-Release
+        path: |
+          **/bin/Release/net472/JsonOverride.dll
+        retention-days: 7
+        
