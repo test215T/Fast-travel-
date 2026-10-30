@@ -19,6 +19,7 @@ namespace JsonOverride
         internal static ConfigEntry<bool> Enabled;
         internal static ConfigEntry<float> ExpMultiplier;
         internal static ConfigEntry<float> SpeedMultiplier;
+        internal static ConfigEntry<bool> FillThaiFromEnglish;
 
         public override void Load()
         {
@@ -32,6 +33,10 @@ namespace JsonOverride
             SpeedMultiplier = Config.Bind("General", "SpeedMultiplier", 1.0f,
                 "Multiplies every Speed value read from the JSON files (values above 0 only). " +
                 "1 = use the JSON as is, 0.5 = half of the JSON value.");
+
+            FillThaiFromEnglish = Config.Bind("General", "FillThaiFromEnglish", true,
+                "New LocData rows that have no Thai (TH) text get their English text as TH, " +
+                "so names and descriptions are not blank when the game runs in Thai.");
 
             string assemblyLocation = Assembly.GetExecutingAssembly().Location;
             string pluginDir = Path.GetDirectoryName(assemblyLocation);

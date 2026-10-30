@@ -293,6 +293,8 @@ namespace JsonOverride
             MethodInfo ndAdd = ndType.GetMethod("Add");
             int newCount = 0;
             int upsertCount = 0;
+            int thFilled = 0;
+            bool isLoc = job.TypeName.EndsWith("LocDataScriptObject");
             if (newItems != null)
             {
                 for (int i = 0; i < newItems.Count; i++)
@@ -313,6 +315,12 @@ namespace JsonOverride
                     }
                     else
                     {
+                        if (isLoc && JsonOverridePlugin.FillThaiFromEnglish.Value)
+                        {
+                            string filled = FillThai(scaled);
+                            if (!string.Equals(filled, scaled, StringComparison.Ordinal)) thFilled++;
+                            scaled = filled;
+                        }
                         ndAdd.Invoke(ndList, new object[] { scaled });
                         newCount++;
                     }
@@ -322,6 +330,9 @@ namespace JsonOverride
             Reflect.Set(patchType, patch, "patchData", pdList);
             Reflect.Set(patchType, patch, "newData", ndList);
 
+            if (isLoc)
+                JsonOverridePlugin.ModLogger.LogInfo("[JsonOverride] DATA_PATCH_LOC_TH_FILLED: " + thFilled +
+                    " new rows got Thai text copied from English.");
             JsonOverridePlugin.ModLogger.LogInfo("[JsonOverride] DATA_PATCH_PATCH: " + name +
                 " patchData=" + patchCount + " upserts=" + upsertCount + " newData=" + newCount);
 
@@ -338,6 +349,40 @@ namespace JsonOverride
             {
                 LogNewRow(tableType, table, newItems[0] as string);
                 LogNewRow(tableType, table, newItems[newItems.Count - 1] as string);
+            }
+        }
+
+        // For a new LocData row without Thai text, copies the English text (or Chinese) into "TH".
+        private static string FillThai(string json)
+        {
+            try
+            {
+                JObj o = MiniJson.Parse(json) as JObj;
+                if (o == null) return json;
+
+                string english = o.GetString("English");
+                if (string.IsNullOrEmpty(english)) english = o.GetString("SChinese");
+                if (string.IsNullOrEmpty(english)) return json;
+                if (!string.IsNullOrEmpty(o.GetString("TH"))) return json;
+
+                StringBuilder sb = new StringBuilder();
+                sb.Append("{\r\n");
+                for (int i = 0; i < o.Count; i++)
+                {
+                    string key = o[i].Key;
+                    if (key == "TH") continue;
+                    string val = o[i].Value as string;
+                    if (val == null && o[i].Value != null)
+                        val = Convert.ToString(o[i].Value, CultureInfo.InvariantCulture);
+                    if (val == null) val = "";
+                    sb.Append("  \"").Append(Esc(key)).Append("\": \"").Append(Esc(val)).Append("\",\r\n");
+                }
+                sb.Append("  \"TH\": \"").Append(Esc(english)).Append("\"\r\n}");
+                return sb.ToString();
+            }
+            catch (Exception)
+            {
+                return json;
             }
         }
 
