@@ -301,21 +301,12 @@ namespace JsonOverride
                     if (s == null) continue;
                     string scaled = Scale(s, expMult, speedMult);
 
-                    string uid = null;
-                    try
-                    {
-                        JObj ro = MiniJson.Parse(s) as JObj;
-                        uid = ro == null ? null : ro.GetString("uid");
-                    }
-                    catch (Exception)
-                    {
-                        uid = null;
-                    }
+                    string rowKey = RowKeyOf(s);
 
-                    if (uid != null && GetRow(tableType, table, uid) != null)
+                    if (rowKey != null && GetRow(tableType, table, rowKey) != null)
                     {
                         object sp = Activator.CreateInstance(spType);
-                        Reflect.Set(spType, sp, "key", uid);
+                        Reflect.Set(spType, sp, "key", rowKey);
                         Reflect.Set(spType, sp, "json", scaled);
                         pdAdd.Invoke(pdList, new object[] { sp });
                         upsertCount++;
@@ -347,6 +338,24 @@ namespace JsonOverride
             {
                 LogNewRow(tableType, table, newItems[0] as string);
                 LogNewRow(tableType, table, newItems[newItems.Count - 1] as string);
+            }
+        }
+
+        // The key the game uses for a row. Numbers are looked up as uid, text as uName, and in some
+        // tables (LocData, FactionGoodsData) every row has uid 0, so uName must come first.
+        private static string RowKeyOf(string rowJson)
+        {
+            try
+            {
+                JObj ro = MiniJson.Parse(rowJson) as JObj;
+                if (ro == null) return null;
+                string key = ro.GetString("uName");
+                if (string.IsNullOrEmpty(key)) key = ro.GetString("uid");
+                return string.IsNullOrEmpty(key) ? null : key;
+            }
+            catch (Exception)
+            {
+                return null;
             }
         }
 
@@ -414,11 +423,9 @@ namespace JsonOverride
             try
             {
                 if (rowJson == null) return;
-                JObj o = MiniJson.Parse(rowJson) as JObj;
-                if (o == null) return;
-                string uid = o.GetString("uid");
-                if (uid == null) return;
-                LogRowFields(tableType, table, uid, rowJson);
+                string key = RowKeyOf(rowJson);
+                if (key == null) return;
+                LogRowFields(tableType, table, key, rowJson);
             }
             catch (Exception ex)
             {
